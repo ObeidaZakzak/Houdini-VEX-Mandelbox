@@ -1,4 +1,10 @@
 # Houdini-VEX-Mandelbox
+(photos)
+
+Check it on [ArtStation](https://www.artstation.com/artwork/Krk3ao)
+
+This is a breakdown of the VEX code used to build the Mandelbox you see in the pictures above. Before starting, I recommend that you check the [Mandelbulb Tutorial from Entagma](https://www.sidefx.com/tutorials/vex-in-houdini-mandelbrot-and-mandelbulb/) to understand better the volume setup. The VEX code below is an adaptation of Entagma's tutorial with extra coding and different operations on the points in order to get a Mandelbox instead of a Mandelbulb.
+
 
 ```C
 function float boxFoldAxis(float x)
