@@ -8,10 +8,20 @@ This is a breakdown of the VEX code used to build the Mandelbox you see in the p
 
 The main idea is to apply an operation on each point of space several times until it reaches a given max number of iterations and by maintaining the distance between the point and the center of the box under a given limit.
 The operation to be applied at each point (x is considered as a point in the formula) : 
+
 <img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/1d9ea0d7b00d8c135f1fdd67727d2834e0dbe58b">
 
+## Setting-up the nodes
+We will work with volumes, so we need a volume node `base_volume` followed by a volume wrangler `mandelbox` where we will write some VEX code. Then we need a VDB convert node to visualize the details, and if you want extra details you can add another VDB convert to visualize the mandelbox as a polygones mesh (but it takes more time to compute). Note that in order to visulize the mandelbox correctly, the `base_volume` size must be set to 12x12, and the volume sampling to something higher than 150.
 
-first of all, let's write the `boxFold` operation for a single axis :
+<img src="https://github.com/ObeidaZakzak/Houdini-VEX-Mandelbox/blob/main/mandelbox_renders/mandelbox_nodes.png" width="310" height="395"> <img src="https://github.com/ObeidaZakzak/Houdini-VEX-Mandelbox/blob/main/mandelbox_renders/mandelbox_vdb.png" width="400" height="400">
+
+## Writing the code
+Everything is written inside of the `mandelbox` volume wrangler. We will seperate the operations by defining several function.
+
+### *boxFold* and *ballFold* functions
+First of all, let's write the `boxFold` operation for a single axis :
+
 ```C
 function float boxFoldAxis(float x)
 {
@@ -50,6 +60,7 @@ function vector ballFold(float r; vector pt)
 }
 ```
 
+### Mandelbox function
 The latest function is the one that iterates and modifies the points until it reaches the maximum number of iterations or the distance limit between the point and the center (0,0,0) :
 
 ```C
@@ -70,6 +81,7 @@ function int Mandelbox(float s, r, f, L; int imax; vector pt0)
 }
 ```
 
+### The *main* program
 Once we have these functions written, we can now write the script modifying the volume in order to build the fractal form :
 
 ```C
@@ -87,3 +99,11 @@ if (Mandelbox(s, r, f, L, maxiter, v@P) < maxiter) {
 }
 ```
 
+In the renders above, I used the following values :
+```
+maxiter = 15
+s = 2.0
+r = 0.5
+f = 1.0
+L = 4.3
+```
